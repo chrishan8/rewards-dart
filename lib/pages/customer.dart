@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-
 // Widgets
 import '../widgets/contact.dart';
 import '../widgets/keypad.dart';
 import '../widgets/progress.dart';
 import '../widgets/prizeList.dart';
+// Stores
+import '../stores/customer.dart';
 
 enum ActionsMode {
   addPoints,
@@ -12,7 +13,9 @@ enum ActionsMode {
 }
 
 class CustomerPageWidget extends StatefulWidget {
-  CustomerPageWidget({ Key key }) : super(key: key);
+  CustomerPageWidget({ Key key, this.store }) : super(key: key);
+
+  final CustomerStore store;
 
   @override
   _CustomerPageState createState() => _CustomerPageState();
@@ -59,7 +62,9 @@ class _CustomerPageState extends State<CustomerPageWidget> {
         Expanded(
           child: Column(
             children: <Widget>[
-              ContactWidget(),
+              ContactWidget(
+                store: widget.store
+              ),
               ProgressWidget(
                 onChangeMode: () => _onChangeMode(ActionsMode.redeemPrizes),
               )

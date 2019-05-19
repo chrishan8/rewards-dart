@@ -1,22 +1,17 @@
 import 'package:flutter/material.dart';
-
-class ContactWidget extends StatefulWidget {
-  ContactWidget({ Key key }) : super(key: key);
-
-  String phone = '(888) 888-8888';
-  String fullName = 'Cool Beans';
-  String email = 'fake@fake.com';
-
-  @override
-  _ContactState createState() => _ContactState();
-}
+import 'package:flutter_mobx/flutter_mobx.dart';
+// Stores
+import '../stores/customer.dart';
 
 enum MoreOption {
   undo,
   edit
 }
 
-class _ContactState extends State<ContactWidget> {
+class ContactWidget extends StatelessWidget {
+  ContactWidget({ Key key, this.store }) : super(key: key);
+
+  final CustomerStore store;
 
   void onClose() {
 
@@ -40,6 +35,36 @@ class _ContactState extends State<ContactWidget> {
         break;
       default:
     }
+  }
+
+  Widget buildInfoTiles() {
+    return Observer(
+      builder: (_) {
+        print('Executed');
+        if (store.currentCustomer == null) {
+          return ListTile(
+            leading: Icon(Icons.store),
+            title: Text('No customer present')
+          );
+        }
+        return Column(
+          children: <Widget>[
+            ListTile(
+              leading: Icon(Icons.phone),
+              title: Text(store.currentCustomer.phone)
+            ),
+            ListTile(
+              leading: Icon(Icons.person),
+              title: Text(store.currentCustomer.name)
+            ),
+            ListTile(
+              leading: Icon(Icons.email),
+              title: Text(store.currentCustomer.email)
+            ),
+          ]
+        );
+      }
+    );
   }
 
   Widget build(BuildContext context) {
@@ -71,18 +96,7 @@ class _ContactState extends State<ContactWidget> {
               ],
             ),
           ),
-          ListTile(
-            leading: Icon(Icons.phone),
-            title: Text(widget.phone)
-          ),
-          ListTile(
-            leading: Icon(Icons.person),
-            title: Text(widget.fullName)
-          ),
-          ListTile(
-            leading: Icon(Icons.email),
-            title: Text(widget.email)
-          ),
+          buildInfoTiles()
         ],
       )
     );

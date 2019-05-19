@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 // Pages
 import 'pages/customer.dart';
+// Stores
+import 'stores/customer.dart';
 
 void main() => runApp(App());
 
@@ -33,24 +36,33 @@ class TabNavigatorWidget extends StatefulWidget {
   _TabNavigatorState createState() => _TabNavigatorState();
 }
 
+final customerStore = CustomerStore();
+
 class _TabNavigatorState extends State<TabNavigatorWidget> {
+  
   final List<TabRoute> _routes = [
     TabRoute(
-      body: CustomerPageWidget(),
+      body: CustomerPageWidget(
+        store: customerStore
+      ),
       tabItem: BottomNavigationBarItem(
         icon: Icon(Icons.home),
         title: Text('Home'),
       )
     ),
     TabRoute(
-      body: CustomerPageWidget(),
+      body: CustomerPageWidget(
+        store: customerStore
+      ),
       tabItem: BottomNavigationBarItem(
         icon: Icon(Icons.home),
         title: Text('Home'),
       )
     ),
     TabRoute(
-      body: CustomerPageWidget(),
+      body: CustomerPageWidget(
+        store: customerStore
+      ),
       tabItem: BottomNavigationBarItem(
         icon: Icon(Icons.home),
         title: Text('Home'),
@@ -66,7 +78,7 @@ class _TabNavigatorState extends State<TabNavigatorWidget> {
   }
 
   void _onFabPressed() {
-
+    customerStore.dismissCustomer();
   }
 
   Widget _buildBody() {
