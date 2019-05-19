@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-
+import 'package:provider/provider.dart';
 // Classes
 import '../classes/prize.dart';
 // Widgets
 import 'prizeItem.dart';
+// Stores
+import '../stores/customer.dart';
 
 class PrizeListWidget extends StatefulWidget {
-  PrizeListWidget({ Key key, this.onChangeMode }) : super(key: key);
-
-  VoidCallback onChangeMode;
+  PrizeListWidget({ Key key }) : super(key: key);
 
   @override
   _PrizeListState createState() => _PrizeListState();
@@ -36,7 +36,6 @@ class _PrizeListState extends State<PrizeListWidget> {
     ),
   };
   Map<String, Prize> _selectedPrizes = {};
-  int _points = 400;
 
   int get selectedTotal {
     if (_selectedPrizes.isNotEmpty) {
@@ -46,26 +45,27 @@ class _PrizeListState extends State<PrizeListWidget> {
     return 0;
   }
 
-  void onSelect(Prize p) {
+  void onSelect(Prize p, int totalPoints) {
     setState(() {
       if (_selectedPrizes.containsKey(p.id)) {
         _selectedPrizes.remove(p.id);
       }
-      else if (selectedTotal + p.value <= _points) {
+      else if (selectedTotal + p.value <= totalPoints) {
         _selectedPrizes[p.id] = p;
       }
     });
   }
 
-  List<Widget> buildPrizeList() {
+  List<Widget> buildPrizeList(CustomerStore store) {
     return _prizes.entries.map((MapEntry<String, Prize> p) => PrizeItemWidget(
-      onTap: () => onSelect(p.value),
+      onTap: () => onSelect(p.value, store.currentCustomer['points']),
       prize: p.value,
       selected: _selectedPrizes.containsKey(p.key)
     )).toList();
   }
 
   Widget build(BuildContext context) {
+    final store = Provider.of<CustomerStore>(context);
     return Card(
       child: Column(
         children: <Widget>[ 
@@ -74,12 +74,12 @@ class _PrizeListState extends State<PrizeListWidget> {
               children: <Widget>[
                 IconButton(
                   icon: Icon(Icons.close),
-                  onPressed: widget.onChangeMode,
+                  onPressed: () => store.setMode(ActionsMode.addPoints),
                 )
               ]
             )
           ),
-          ...buildPrizeList() 
+          ...buildPrizeList(store) 
         ]
       )
     );

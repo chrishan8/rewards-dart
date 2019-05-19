@@ -6,28 +6,39 @@ import '../classes/customer.dart';
 // Include generated file
 part 'customer.g.dart';
 
+enum ActionsMode {
+  addPoints,
+  redeemPrizes
+}
+
 class CustomerStore = _CustomerStore with _$CustomerStore;
 
 abstract class _CustomerStore implements Store {
   @observable
-  Customer currentCustomer = Customer(
-    email: 'fake@fake.com',
-    name: 'Cool Beans',
-    phone: '(888) 888-8888',
-    points: 500
-  );
+  ActionsMode mode = ActionsMode.addPoints;
 
-  // @observable
-  // ObservableMap currentCustomer = ObservableMap.of({
-  //   'email': 'fake@fake.com',
-  //   'name': 'Cool Beans',
-  //   'phone': '(888) 888-8888',
-  //   'points': 500
-  // });
+  @observable
+  ObservableMap currentCustomer = ObservableMap.of(
+    Customer(
+      email: 'fake@fake.com',
+      name: 'Cool Beans',
+      phone: '(888) 888-8888',
+      points: 500
+    ).toMap()
+  );
 
   @action
   void dismissCustomer() {
     currentCustomer = null;
-    print(currentCustomer);
+  }
+
+  @action
+  void addPoints(int value) {
+    currentCustomer['points'] += value;
+  }
+
+  @action
+  void setMode(ActionsMode value) {
+    mode = value;
   }
 }

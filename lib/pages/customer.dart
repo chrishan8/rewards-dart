@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:provider/provider.dart';
 // Widgets
 import '../widgets/contact.dart';
 import '../widgets/keypad.dart';
@@ -7,15 +9,8 @@ import '../widgets/prizeList.dart';
 // Stores
 import '../stores/customer.dart';
 
-enum ActionsMode {
-  addPoints,
-  redeemPrizes
-}
-
 class CustomerPageWidget extends StatefulWidget {
-  CustomerPageWidget({ Key key, this.store }) : super(key: key);
-
-  final CustomerStore store;
+  CustomerPageWidget({ Key key }) : super(key: key);
 
   @override
   _CustomerPageState createState() => _CustomerPageState();
@@ -23,38 +18,34 @@ class CustomerPageWidget extends StatefulWidget {
 
 class _CustomerPageState extends State<CustomerPageWidget> {
   final TextEditingController _keypadInputCtrl = new TextEditingController();
-  ActionsMode _mode = ActionsMode.addPoints;
 
   void onComplete() {
 
   }
 
-  Widget _buildControlWidget() {
-    switch(_mode) {
-      case ActionsMode.addPoints:
-        return KeypadWidget(
-          label: 'Points',
-          inputCtrl: _keypadInputCtrl
-        );
-        break;
-      case ActionsMode.redeemPrizes:
-        return PrizeListWidget(
-          onChangeMode: () => _onChangeMode(ActionsMode.addPoints),
-        );
-        break;
-      default:
-    }
-    return null;
-  }
-
-  void _onChangeMode(ActionsMode mode) {
-    setState(() {
-      _mode = mode;
-    });
+  Widget _buildControlWidget(CustomerStore store) {
+    return Observer(
+      builder: (_) {
+        switch(store.mode) {
+          case ActionsMode.addPoints:
+            return KeypadWidget(
+              label: 'Points',
+              inputCtrl: _keypadInputCtrl
+            );
+            break;
+          case ActionsMode.redeemPrizes:
+            return PrizeListWidget();
+            break;
+          default:
+        }
+        return null;
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    final store = Provider.of<CustomerStore>(context);
     return Row(
       mainAxisSize: MainAxisSize.max,
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -62,19 +53,15 @@ class _CustomerPageState extends State<CustomerPageWidget> {
         Expanded(
           child: Column(
             children: <Widget>[
-              ContactWidget(
-                store: widget.store
-              ),
-              ProgressWidget(
-                onChangeMode: () => _onChangeMode(ActionsMode.redeemPrizes),
-              )
+              ContactWidget(),
+              ProgressWidget()
             ],
           ),
         ),
         Expanded(
           child: Column(
             children: <Widget>[
-              _buildControlWidget()
+              _buildControlWidget(store)
             ],
           ),
         ),

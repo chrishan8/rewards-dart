@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:provider/provider.dart';
 // Stores
 import '../stores/customer.dart';
 
@@ -9,9 +10,7 @@ enum MoreOption {
 }
 
 class ContactWidget extends StatelessWidget {
-  ContactWidget({ Key key, this.store }) : super(key: key);
-
-  final CustomerStore store;
+  ContactWidget({ Key key }) : super(key: key);
 
   void onClose() {
 
@@ -37,10 +36,10 @@ class ContactWidget extends StatelessWidget {
     }
   }
 
-  Widget buildInfoTiles() {
+  Widget buildInfoTiles(BuildContext context) {
+    final store = Provider.of<CustomerStore>(context);
     return Observer(
       builder: (_) {
-        print('Executed');
         if (store.currentCustomer == null) {
           return ListTile(
             leading: Icon(Icons.store),
@@ -51,15 +50,15 @@ class ContactWidget extends StatelessWidget {
           children: <Widget>[
             ListTile(
               leading: Icon(Icons.phone),
-              title: Text(store.currentCustomer.phone)
+              title: Text(store.currentCustomer['phone'])
             ),
             ListTile(
               leading: Icon(Icons.person),
-              title: Text(store.currentCustomer.name)
+              title: Text(store.currentCustomer['name'])
             ),
             ListTile(
               leading: Icon(Icons.email),
-              title: Text(store.currentCustomer.email)
+              title: Text(store.currentCustomer['email'])
             ),
           ]
         );
@@ -96,7 +95,7 @@ class ContactWidget extends StatelessWidget {
               ],
             ),
           ),
-          buildInfoTiles()
+          buildInfoTiles(context)
         ],
       )
     );

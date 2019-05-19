@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:provider/provider.dart';
 // Pages
 import 'pages/customer.dart';
 // Stores
@@ -42,27 +43,21 @@ class _TabNavigatorState extends State<TabNavigatorWidget> {
   
   final List<TabRoute> _routes = [
     TabRoute(
-      body: CustomerPageWidget(
-        store: customerStore
-      ),
+      body: CustomerPageWidget(),
       tabItem: BottomNavigationBarItem(
         icon: Icon(Icons.home),
         title: Text('Home'),
       )
     ),
     TabRoute(
-      body: CustomerPageWidget(
-        store: customerStore
-      ),
+      body: CustomerPageWidget(),
       tabItem: BottomNavigationBarItem(
         icon: Icon(Icons.home),
         title: Text('Home'),
       )
     ),
     TabRoute(
-      body: CustomerPageWidget(
-        store: customerStore
-      ),
+      body: CustomerPageWidget(),
       tabItem: BottomNavigationBarItem(
         icon: Icon(Icons.home),
         title: Text('Home'),
@@ -94,7 +89,12 @@ class _TabNavigatorState extends State<TabNavigatorWidget> {
       appBar: AppBar(
         title: Text('Welcome to Flutter'),
       ),
-      body: _buildBody(),
+      body: MultiProvider(
+        providers: [
+          Provider<CustomerStore>.value(value: customerStore)
+        ],
+        child: _buildBody()
+      ),
       bottomNavigationBar: BottomNavigationBar(
         items: _buildTabItems(),
         currentIndex: _selectedIndex,

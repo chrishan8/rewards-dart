@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+// Widgets
 import 'keypad-button.dart';
+// Stores
+import '../stores/customer.dart';
 
 class KeypadWidget extends StatefulWidget {
   KeypadWidget({Key key, @required this.label, @required this.inputCtrl }) : super(key: key);
@@ -34,6 +38,7 @@ class _KeypadState extends State<KeypadWidget> {
   }
 
   Widget build(BuildContext context) {
+    final store = Provider.of<CustomerStore>(context);
     return Column(
       mainAxisSize: MainAxisSize.max,
       children: <Widget>[
@@ -113,7 +118,7 @@ class _KeypadState extends State<KeypadWidget> {
                   KeypadButton(
                     icon: Icon(Icons.add_box),
                     value: 'Add',
-                    onPressed: () => onAdd(),
+                    onPressed: () => store.addPoints(int.parse(widget.inputCtrl.text)),
                   )
                 ],
               ),
