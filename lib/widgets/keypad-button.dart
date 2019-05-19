@@ -10,13 +10,10 @@ class KeypadButton extends StatelessWidget {
 
   renderButtonType() {
     if (icon != null) {
-      return RaisedButton.icon(
+      return IconButton(
         onPressed: onPressed,
         icon: icon,
-        label: Text(
-          value,
-          style: TextStyle(fontSize: _fontSize)
-        )
+        iconSize: _fontSize,
       );
     }
     return RaisedButton(
@@ -29,10 +26,16 @@ class KeypadButton extends StatelessWidget {
   }
 
   Widget build(BuildContext context) {
-    return SizedBox(
+    return Container(
       width: double.infinity,
-      height: 100,
+      height: 70,
       child: renderButtonType()
     );
+    // return Expanded(
+    //   child: Container(
+    //     width: double.infinity,
+    //     child: renderButtonType()
+    //   )
+    // );
   }
 }
