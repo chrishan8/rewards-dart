@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 // Stores
-import '../stores/customer.dart';
+import '../stores/customer/customer.dart';
 
 enum MoreOption {
   undo,
@@ -36,8 +36,7 @@ class ContactWidget extends StatelessWidget {
     }
   }
 
-  Widget buildInfoTiles(BuildContext context) {
-    final store = Provider.of<CustomerStore>(context);
+  Widget buildInfoTiles(CustomerStore store) {
     return Observer(
       builder: (_) {
         if (store.currentCustomer == null) {
@@ -49,12 +48,12 @@ class ContactWidget extends StatelessWidget {
         return Column(
           children: <Widget>[
             ListTile(
-              leading: Icon(Icons.phone),
-              title: Text(store.currentCustomer['phone'])
-            ),
-            ListTile(
               leading: Icon(Icons.person),
               title: Text(store.currentCustomer['name'])
+            ),
+            ListTile(
+              leading: Icon(Icons.phone),
+              title: Text(store.currentCustomer['phone'])
             ),
             ListTile(
               leading: Icon(Icons.email),
@@ -67,6 +66,7 @@ class ContactWidget extends StatelessWidget {
   }
 
   Widget build(BuildContext context) {
+    final store = Provider.of<CustomerStore>(context);
     return Card(
       child: Column(
         children: <Widget>[
@@ -95,7 +95,7 @@ class ContactWidget extends StatelessWidget {
               ],
             ),
           ),
-          buildInfoTiles(context)
+          buildInfoTiles(store)
         ],
       )
     );

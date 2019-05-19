@@ -6,7 +6,8 @@ import '../classes/prize.dart';
 // Widgets
 import 'prizeItem.dart';
 // Stores
-import '../stores/customer.dart';
+import '../stores/customer/customer.dart';
+import '../stores/prizes/prizes.dart';
 
 class ProgressWidget extends StatelessWidget {
   final Prize _nextPrize = new Prize(
@@ -18,29 +19,64 @@ class ProgressWidget extends StatelessWidget {
 
   ProgressWidget({ Key key }) : super(key: key);
 
-  Widget build(BuildContext context) {
-    final store = Provider.of<CustomerStore>(context);
-    return Observer(
-      builder: (_) => Card(
-        child: Column(
-          children: <Widget>[
-            LinearProgressIndicator(
-              value: store.currentCustomer['points'] / _nextPrize.value
-            ),
-            PrizeItemWidget(
-              prize: _nextPrize
-            ),
-            Divider(),
-            ListTile(
-              leading: Text('3'),
-              title: Text('Prizes Available'),
-              subtitle: Text('Redeem points for prizes'),
-              trailing: Icon(Icons.arrow_forward),
-              onTap: () => store.setMode(ActionsMode.redeemPrizes)
-            )
-          ],
+  List<Widget> buildNextPrizeItem(CustomerStore customerStore, PrizesStore prizesStore) {
+    if (prizesStore.nextPrize != null) {
+      return [
+        LinearProgressIndicator(
+          value: customerStore.currentCustomer['points'] / prizesStore.nextPrize.value
+        ),
+        PrizeItemWidget(
+          prize: prizesStore.nextPrize,
+          totalPoints: customerStore.currentCustomer['points']
+        ),
+      ];
+    }
+    return [];
+  }
+
+  List<Widget> buildRedeemItem(CustomerStore customerStore, PrizesStore prizesStore) {
+    final int _availablePrizeCount = prizesStore.availablePrizes.length;
+    if (_availablePrizeCount > 0) {
+      return [
+        LinearProgressIndicator(
+          value: 1.0,
+          valueColor: AlwaysStoppedAnimation<Color>(Colors.lightGreen),
+        ),
+        ListTile(
+          leading: Column(
+            children: <Widget>[
+              Icon(Icons.card_giftcard),
+              Text(
+                _availablePrizeCount.toString(),
+                style: TextStyle(
+                  fontSize: 16
+                )
+              ),
+            ]
+          ),
+          title: Text('Available'),
+          trailing: Icon(Icons.arrow_forward),
+          onTap: () => customerStore.setMode(ActionsMode.redeemPrizes)
         )
-      )
+      ];
+    }
+    return [];
+  }
+
+  Widget build(BuildContext context) {
+    final customerStore = Provider.of<CustomerStore>(context);
+    final prizesStore = Provider.of<PrizesStore>(context);
+    return Observer(
+      builder: (_) {
+        return Card(
+          child: Column(
+            children: <Widget>[
+              ...buildNextPrizeItem(customerStore, prizesStore),
+              ...buildRedeemItem(customerStore, prizesStore)
+            ],
+          )
+        );
+      }
     );
   }
 }

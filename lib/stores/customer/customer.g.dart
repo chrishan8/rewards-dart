@@ -64,6 +64,16 @@ mixin _$CustomerStore on _CustomerStore, Store {
   }
 
   @override
+  void subtractPoints(int value) {
+    final _$actionInfo = _$_CustomerStoreActionController.startAction();
+    try {
+      return super.subtractPoints(value);
+    } finally {
+      _$_CustomerStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void setMode(ActionsMode value) {
     final _$actionInfo = _$_CustomerStoreActionController.startAction();
     try {

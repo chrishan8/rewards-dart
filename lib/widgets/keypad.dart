@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 // Widgets
 import 'keypad-button.dart';
 // Stores
-import '../stores/customer.dart';
+import '../stores/customer/customer.dart';
 
 class KeypadWidget extends StatefulWidget {
   KeypadWidget({Key key, @required this.label, @required this.inputCtrl }) : super(key: key);

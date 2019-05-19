@@ -7,7 +7,7 @@ import '../widgets/keypad.dart';
 import '../widgets/progress.dart';
 import '../widgets/prizeList.dart';
 // Stores
-import '../stores/customer.dart';
+import '../stores/customer/customer.dart';
 
 class CustomerPageWidget extends StatefulWidget {
   CustomerPageWidget({ Key key }) : super(key: key);

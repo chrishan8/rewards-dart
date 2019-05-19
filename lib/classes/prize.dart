@@ -5,4 +5,13 @@ class Prize {
   final int value;
 
   Prize({ this.id, this.name, this.description, this.value });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'name': name,
+      'description': description,
+      'value': value
+    };
+  }
 }

@@ -4,7 +4,9 @@ import 'package:provider/provider.dart';
 // Pages
 import 'pages/customer.dart';
 // Stores
-import 'stores/customer.dart';
+import 'stores/root.dart';
+import 'stores/customer/customer.dart';
+import 'stores/prizes/prizes.dart';
 
 void main() => runApp(App());
 
@@ -16,11 +18,6 @@ class App extends StatelessWidget {
       home: TabNavigatorWidget()
     );
   }
-}
-
-enum ActionsMode {
-  addPoints,
-  redeemPrizes
 }
 
 class TabRoute {
@@ -37,7 +34,9 @@ class TabNavigatorWidget extends StatefulWidget {
   _TabNavigatorState createState() => _TabNavigatorState();
 }
 
-final customerStore = CustomerStore();
+final rootStore = RootStore();
+final customerStore = rootStore.customerStore;
+final prizesStore = rootStore.prizesStore;
 
 class _TabNavigatorState extends State<TabNavigatorWidget> {
   
@@ -72,8 +71,16 @@ class _TabNavigatorState extends State<TabNavigatorWidget> {
     });
   }
 
-  void _onFabPressed() {
-    customerStore.dismissCustomer();
+  void _onFabPressed(ActionsMode mode) {
+    switch(mode) {
+      case ActionsMode.addPoints:
+        customerStore.dismissCustomer();
+        break;
+      case ActionsMode.redeemPrizes:
+        prizesStore.redeemPrizes();
+        break;
+      default:
+    }
   }
 
   Widget _buildBody() {
@@ -91,7 +98,8 @@ class _TabNavigatorState extends State<TabNavigatorWidget> {
       ),
       body: MultiProvider(
         providers: [
-          Provider<CustomerStore>.value(value: customerStore)
+          Provider<CustomerStore>.value(value: customerStore),
+          Provider<PrizesStore>.value(value: prizesStore)
         ],
         child: _buildBody()
       ),
@@ -102,7 +110,7 @@ class _TabNavigatorState extends State<TabNavigatorWidget> {
         onTap: _onItemTapped,
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _onFabPressed,
+        onPressed: () => _onFabPressed(customerStore.mode),
         child: Icon(Icons.thumb_up),
         backgroundColor: Colors.lightGreen,
       ),
